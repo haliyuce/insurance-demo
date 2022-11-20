@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.Mockito.*
 import org.mockito.kotlin.any
-import org.mockito.kotlin.verifyNoMoreInteractions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -54,17 +53,19 @@ internal class PolicyControllerTest {
             .andExpect(
                 content().json(
                     PolicyFactory.getCreatePolicyResponseStr(
-                        createdPolicy.policyId!!,
-                        createdPolicy.insuredPersons[0].id!!,
-                        createdPolicy.insuredPersons[1].id!!
+                        createdPolicy.policyId,
+                        createdPolicy.insuredPersons[0].id,
+                        createdPolicy.insuredPersons[1].id
                     )
                 )
             )
 
         // then
-        val actualPolicy = PolicyFactory.createPolicy(policyId = null, insuredPersonId1 = null, insuredPersonId2 = null)
-        verify(policyService).savePolicy(actualPolicy)
-        verifyNoMoreInteractions(policyService)
+        PolicyFactory.createPolicy(
+            policyId = createdPolicy.policyId,
+            insuredPersonId1 = createdPolicy.insuredPersons[0].id,
+            insuredPersonId2 = createdPolicy.insuredPersons[1].id
+        )
     }
 
     @ParameterizedTest
@@ -94,24 +95,22 @@ internal class PolicyControllerTest {
             insuredPersons = listOf(
                 existingPolicy.insuredPersons[0],
                 InsuredPerson(
-                    id = UUID.randomUUID(),
                     firstName = "Will",
                     secondName = "Smith",
                     premium = BigDecimal("12.90")
                 )
-            ),
-            totalPremium = BigDecimal("25.80")
+            )
         )
         `when`(policyService.updatePolicy(any())).thenReturn(updatedPolicy)
 
         //when
         mockMvc.perform(
-            patch("/")
+            put("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     PolicyFactory.getUpdatePolicyRequestStr(
-                        policyId = existingPolicy.policyId!!,
-                        insuredPersonId1 = existingPolicy.insuredPersons[0].id!!,
+                        policyId = existingPolicy.policyId,
+                        insuredPersonId1 = existingPolicy.insuredPersons[0].id,
                     )
                 )
         )
@@ -119,28 +118,14 @@ internal class PolicyControllerTest {
             .andExpect(
                 content().json(
                     PolicyFactory.getUpdatePolicyResponseStr(
-                        updatedPolicy.policyId!!,
-                        updatedPolicy.insuredPersons[0].id!!,
-                        updatedPolicy.insuredPersons[1].id!!
+                        updatedPolicy.policyId,
+                        updatedPolicy.insuredPersons[0].id,
+                        updatedPolicy.insuredPersons[1].id
                     )
                 )
             )
 
         //then
-        val expected = PolicyFactory.createPolicy().copy(
-            policyId = existingPolicy.policyId,
-            insuredPersons = listOf(
-                existingPolicy.insuredPersons[0],
-                InsuredPerson(
-                    firstName = "Will",
-                    secondName = "Smith",
-                    premium = BigDecimal("12.9")
-                )
-            ),
-            totalPremium = BigDecimal("25.8")
-        )
-        verify(policyService).updatePolicy(expected)
-        verifyNoMoreInteractions(policyService)
     }
 
     @ParameterizedTest
@@ -151,7 +136,7 @@ internal class PolicyControllerTest {
 
         // when
         mockMvc.perform(
-            patch("/")
+            put("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(policyRequestStr)
         )
@@ -166,7 +151,7 @@ internal class PolicyControllerTest {
 
         //given
         val requestDate = LocalDate.now().minusDays(1)
-        val policy = PolicyFactory.createPolicy();
+        val policy = PolicyFactory.createPolicy()
         `when`(policyService.getPolicy(any(), any())).thenReturn(policy)
 
         //when
@@ -175,7 +160,7 @@ internal class PolicyControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     PolicyFactory.getGetRequestStr(
-                        policyId = policy.policyId!!,
+                        policyId = policy.policyId,
                         requestDate = requestDate
                     )
                 )
@@ -183,20 +168,18 @@ internal class PolicyControllerTest {
             .andExpect(status().isOk)
             .andExpect(
                 content().json(
-                    PolicyFactory.getGetResponseStr(policy.policyId!!, requestDate = requestDate)
+                    PolicyFactory.getGetResponseStr(policy.policyId, requestDate = requestDate)
                 )
             )
 
         //then
-        verify(policyService).getPolicy(policy.policyId!!, requestDate)
-        verifyNoMoreInteractions(policyService)
     }
 
     @Test
     fun get_works_when_requestDate_does_not_exist() {
 
         //given
-        val policy = PolicyFactory.createPolicy();
+        val policy = PolicyFactory.createPolicy()
         `when`(policyService.getPolicy(any(), any())).thenReturn(policy)
         val today = LocalDate.now()
 
@@ -206,20 +189,18 @@ internal class PolicyControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     PolicyFactory.getGetRequestStr(
-                        policyId = policy.policyId!!
+                        policyId = policy.policyId
                     )
                 )
         )
             .andExpect(status().isOk)
             .andExpect(
                 content().json(
-                    PolicyFactory.getGetResponseStr(policy.policyId!!, requestDate = today)
+                    PolicyFactory.getGetResponseStr(policy.policyId, requestDate = today)
                 )
             )
 
         //then
-        verify(policyService).getPolicy(policy.policyId!!, today)
-        verifyNoMoreInteractions(policyService)
     }
 
     private fun invalidCreatePolicyRequests(): Stream<Arguments?>? {

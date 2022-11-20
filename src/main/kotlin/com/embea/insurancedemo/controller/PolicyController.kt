@@ -6,8 +6,8 @@ import com.embea.insurancedemo.service.PolicyService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
@@ -29,12 +29,13 @@ class PolicyController(
         )
     }
 
-    @PatchMapping
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     fun update(@Valid @RequestBody updatePolicyRequest: UpdatePolicyRequest): UpdatePolicyResponse {
 
         return PolicyMapper.mapUpdatePolicyResponseFromPolicy(
             policyService.updatePolicy(PolicyMapper.createPolicyFromUpdateDto(updatePolicyRequest))
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Policy not found!")
         )
     }
 

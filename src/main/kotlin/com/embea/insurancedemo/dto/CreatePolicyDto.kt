@@ -36,7 +36,7 @@ data class CreatePolicyResponse(
     val startDate: LocalDate,
     val insuredPersons: List<CreateInsuredPersonResponse>,
     @JsonSerialize(using = MoneySerializer::class)
-    val totalPremium: BigDecimal
+    val totalPremium: BigDecimal = insuredPersons.sumOf { it.premium }
 )
 
 data class CreateInsuredPersonResponse(

@@ -1,6 +1,5 @@
 package com.embea.insurancedemo
 
-import com.embea.insurancedemo.domain.IdFactory
 import com.embea.insurancedemo.domain.InsuredPerson
 import com.embea.insurancedemo.domain.Policy
 import java.math.BigDecimal
@@ -62,9 +61,9 @@ object PolicyFactory {
     }
 
     fun createPolicy(
-        policyId: UUID? = IdFactory.createId(),
-        insuredPersonId1: UUID? = IdFactory.createId(),
-        insuredPersonId2: UUID? = IdFactory.createId()
+        policyId: UUID = UUID.randomUUID(),
+        insuredPersonId1: UUID = UUID.randomUUID(),
+        insuredPersonId2: UUID = UUID.randomUUID()
     ) = Policy(
         policyId = policyId,
         startDate = LocalDate.now().plusDays(1),
@@ -81,8 +80,7 @@ object PolicyFactory {
                 "Doe",
                 BigDecimal("15.9")
             ),
-        ),
-        totalPremium = BigDecimal("28.8")
+        )
     )
 
     fun getUpdatePolicyRequestStr(

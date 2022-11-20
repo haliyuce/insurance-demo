@@ -25,18 +25,18 @@ object PolicyMapper {
 
     fun mapCreatePolicyResponseFromPolicy(policy: Policy): CreatePolicyResponse {
         return CreatePolicyResponse(
-            policyId = policy.policyId!!,
+            policyId = policy.policyId,
             startDate = policy.startDate,
             insuredPersons = policy.insuredPersons.stream()
                 .map {
                     CreateInsuredPersonResponse(
-                        id = it.id!!,
+                        id = it.id,
                         firstName = it.firstName,
                         secondName = it.secondName,
                         premium = it.premium
                     )
                 }.toList(),
-            totalPremium = policy.totalPremium.setScale(2, RoundingMode.HALF_UP)
+            totalPremium = policy.calculateTotalPremium().setScale(2, RoundingMode.HALF_UP)
         )
     }
 
@@ -46,48 +46,49 @@ object PolicyMapper {
             startDate = updatePolicyRequest.effectiveDate,
             insuredPersons = updatePolicyRequest.insuredPersons.stream()
                 .map {
-                    InsuredPerson(
-                        id = it.id,
-                        firstName = it.firstName,
-                        secondName = it.secondName,
-                        premium = it.premium
-                    )
+                    it.id?.let { id ->
+                        InsuredPerson(
+                            id = id,
+                            firstName = it.firstName,
+                            secondName = it.secondName,
+                            premium = it.premium
+                        )
+                    }
                 }.toList()
         )
     }
 
     fun mapUpdatePolicyResponseFromPolicy(policy: Policy): UpdatePolicyResponse {
         return UpdatePolicyResponse(
-            policyId = policy.policyId!!,
+            policyId = policy.policyId,
             effectiveDate = policy.startDate,
             insuredPersons = policy.insuredPersons.stream()
-                .filter { it.id != null }
                 .map {
                     UpdateInsuredPersonResponse(
-                        id = it.id!!,
+                        id = it.id,
                         firstName = it.firstName,
                         secondName = it.secondName,
                         premium = it.premium
                     )
                 }.toList(),
-            totalPremium = policy.totalPremium.setScale(2, RoundingMode.HALF_UP)
+            totalPremium = policy.calculateTotalPremium().setScale(2, RoundingMode.HALF_UP)
         )
     }
 
     fun mapGetPolicyResponseFromPolicy(policy: Policy, requestDate: LocalDate): GetPolicyResponse {
         return GetPolicyResponse(
-            policyId = policy.policyId!!,
+            policyId = policy.policyId,
             requestDate = requestDate,
             insuredPersons = policy.insuredPersons.stream()
                 .map {
                     GetInsuredPersonResponse(
-                        id = it.id!!,
+                        id = it.id,
                         firstName = it.firstName,
                         secondName = it.secondName,
                         premium = it.premium
                     )
                 }.toList(),
-            totalPremium = policy.totalPremium.setScale(2, RoundingMode.HALF_UP)
+            totalPremium = policy.calculateTotalPremium().setScale(2, RoundingMode.HALF_UP)
         )
 
     }
