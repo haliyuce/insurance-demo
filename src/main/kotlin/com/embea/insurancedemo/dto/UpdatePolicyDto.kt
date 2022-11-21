@@ -19,8 +19,6 @@ data class UpdatePolicyRequest (
     val effectiveDate: LocalDate,
     @field:Valid
     val insuredPersons: List<@Valid UpdateInsuredPersonRequest>,
-    @JsonSerialize(using = MoneySerializer::class)
-    val totalPremium: BigDecimal
 )
 
 data class UpdateInsuredPersonRequest(

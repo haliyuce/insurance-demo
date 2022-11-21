@@ -63,10 +63,11 @@ object PolicyFactory {
     fun createPolicy(
         policyId: UUID = UUID.randomUUID(),
         insuredPersonId1: UUID = UUID.randomUUID(),
-        insuredPersonId2: UUID = UUID.randomUUID()
+        insuredPersonId2: UUID = UUID.randomUUID(),
+        startDate: LocalDate = LocalDate.now().plusDays(1)
     ) = Policy(
         policyId = policyId,
-        startDate = LocalDate.now().plusDays(1),
+        startDate = startDate,
         insuredPersons = listOf(
             InsuredPerson(
                 insuredPersonId1,
@@ -107,10 +108,7 @@ object PolicyFactory {
                         "secondName": "Smith",
                         "premium": $premiumForInsurePerson2
                     }
-                ],
-                "totalPremium": ${
-            premiumForInsurePerson1.add(premiumForInsurePerson2).setScale(2, RoundingMode.HALF_UP)
-        }
+                ]
             }
         """.trimIndent()
     }

@@ -5,6 +5,7 @@ import com.embea.insurancedemo.domain.Policy
 import com.embea.insurancedemo.dto.*
 import java.math.RoundingMode
 import java.time.LocalDate
+import java.util.*
 import kotlin.streams.toList
 
 object PolicyMapper {
@@ -46,14 +47,12 @@ object PolicyMapper {
             startDate = updatePolicyRequest.effectiveDate,
             insuredPersons = updatePolicyRequest.insuredPersons.stream()
                 .map {
-                    it.id?.let { id ->
-                        InsuredPerson(
-                            id = id,
-                            firstName = it.firstName,
-                            secondName = it.secondName,
-                            premium = it.premium
-                        )
-                    }
+                    InsuredPerson(
+                        id = it.id ?: UUID.randomUUID(),
+                        firstName = it.firstName,
+                        secondName = it.secondName,
+                        premium = it.premium
+                    )
                 }.toList()
         )
     }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
 import java.math.BigDecimal
+import java.time.LocalDate
 
 @DataJpaTest
 @Import(PolicyService::class)
@@ -67,5 +68,19 @@ internal class PolicyServiceTest {
         val updatedPolicyEntity = policyRepository.findById(actual!!.policyId)
         assertThat(updatedPolicyEntity).isPresent
         assertThat(actual).isEqualTo(PolicyMapper.fromEntity(updatedPolicyEntity.get()))
+    }
+
+    @Test
+    fun getPolicy_works() {
+
+        //given
+        val policy = PolicyFactory.createPolicy(startDate = LocalDate.now().minusDays(1))
+        policyRepository.save(PolicyMapper.toEntity(policy))
+
+        //when
+        val actual = policyService.getPolicy(policy.policyId, LocalDate.now())
+
+        //then
+        assertThat(actual).isEqualTo(policy)
     }
 }

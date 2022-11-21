@@ -45,7 +45,7 @@ internal class PolicyControllerTest {
 
         // when
         mockMvc.perform(
-            post("/")
+            post("/policies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(PolicyFactory.getCreatePolicyRequestStr())
         )
@@ -76,7 +76,7 @@ internal class PolicyControllerTest {
 
         // when
         mockMvc.perform(
-            post("/")
+            post("/policies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(policyRequestStr)
         )
@@ -105,7 +105,7 @@ internal class PolicyControllerTest {
 
         //when
         mockMvc.perform(
-            put("/")
+            put("/policies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     PolicyFactory.getUpdatePolicyRequestStr(
@@ -136,7 +136,7 @@ internal class PolicyControllerTest {
 
         // when
         mockMvc.perform(
-            put("/")
+            put("/policies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(policyRequestStr)
         )
@@ -156,7 +156,7 @@ internal class PolicyControllerTest {
 
         //when
         mockMvc.perform(
-            get("/")
+            get("/policies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     PolicyFactory.getGetRequestStr(
@@ -185,7 +185,7 @@ internal class PolicyControllerTest {
 
         //when
         mockMvc.perform(
-            get("/")
+            get("/policies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     PolicyFactory.getGetRequestStr(

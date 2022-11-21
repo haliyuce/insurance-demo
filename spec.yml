@@ -1,0 +1,202 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /policies:
+    get:
+      tags:
+        - policy-controller
+      operationId: get
+      parameters:
+        - name: getPolicyRequest
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/GetPolicyRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/GetPolicyResponse'
+    put:
+      tags:
+        - policy-controller
+      operationId: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePolicyRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UpdatePolicyResponse'
+    post:
+      tags:
+        - policy-controller
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePolicyRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CreatePolicyResponse'
+components:
+  schemas:
+    UpdateInsuredPersonRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        secondName:
+          type: string
+        premium:
+          minimum: 0
+          exclusiveMinimum: true
+          type: number
+    UpdatePolicyRequest:
+      type: object
+      properties:
+        policyId:
+          type: string
+          format: uuid
+        effectiveDate:
+          type: string
+          example: 12.2.2022
+        insuredPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateInsuredPersonRequest'
+        totalPremium:
+          type: number
+    UpdateInsuredPersonResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        secondName:
+          type: string
+        premium:
+          type: number
+    UpdatePolicyResponse:
+      type: object
+      properties:
+        policyId:
+          type: string
+          format: uuid
+        effectiveDate:
+          type: string
+          example: 12.2.2022
+        insuredPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateInsuredPersonResponse'
+        totalPremium:
+          type: number
+    CreateInsuredPerson:
+      type: object
+      properties:
+        firstName:
+          type: string
+        secondName:
+          type: string
+        premium:
+          minimum: 0
+          exclusiveMinimum: true
+          type: number
+    CreatePolicyRequest:
+      type: object
+      properties:
+        startDate:
+          type: string
+          example: 12.2.2022
+        insuredPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInsuredPerson'
+    CreateInsuredPersonResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        secondName:
+          type: string
+        premium:
+          type: number
+    CreatePolicyResponse:
+      type: object
+      properties:
+        policyId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          example: 12.2.2022
+        insuredPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateInsuredPersonResponse'
+        totalPremium:
+          type: number
+    GetPolicyRequest:
+      type: object
+      properties:
+        policyId:
+          type: string
+          format: uuid
+        requestDate:
+          type: string
+          example: 12.2.2022
+    GetInsuredPersonResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        secondName:
+          type: string
+        premium:
+          type: number
+    GetPolicyResponse:
+      type: object
+      properties:
+        policyId:
+          type: string
+          format: uuid
+        requestDate:
+          type: string
+          example: 12.2.2022
+        insuredPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetInsuredPersonResponse'
+        totalPremium:
+          type: number

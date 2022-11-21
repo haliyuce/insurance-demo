@@ -44,6 +44,7 @@ object PolicyMapper {
         startDate = policy.startDate,
         insuredPersons = policy.insuredPersons.map {
             InsuredPersonEntity(
+                id = it.id,
                 firstName = it.firstName,
                 secondName = it.secondName,
                 premium = it.premium
